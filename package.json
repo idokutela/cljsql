@@ -1,0 +1,12 @@
+{
+  "name": "cljsql",
+  "version": "0.0.0",
+  "description": "A minimal websql wrapper in clojurescript.",
+  "main": "index.js",
+  "author": "Alexander <idokutela@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "shadow-cljs": "^2.7.13",
+    "websql": "^1.0.0"
+  }
+}

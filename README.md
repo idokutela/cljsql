@@ -7,22 +7,20 @@ sequential-looking code. A snippet is worth a thousand words:
 (go
   (println
 
-;; tx starts a transaction. It returns a channel with the final
-;; value in the block.
-
+    ; tx starts a transaction. It returns a channel with the final
+    ; value in the block.
     (tx db
-
-;; <q executes a query asynchronously
-;; ... other code can run while it is executed
        (try
+
+         ; <q executes a query asynchronously
+         ; ... other code can run while it is executed
          (<q "INSERT INTO customers VALUES (?, ?)" ["John Smith", "(123)
             23-132"])
 
-;; If the insert fails, do something about it.
-
+         ; If the insert fails, do something about it.
          (catch SQLError e (println "Insert failed!")))
 
-;; Executes after the (possibly failed) insert.
+       ; Executes after the (possibly failed) insert.
        (<q "SELECT (name, age) FROM CUSTOMERS"))))
 ```
 
@@ -42,6 +40,7 @@ examples:
 ## API
 
 **Be sure to require `cljs.core.async` if you use `cljsql`.**
+
 `cljsql` macros rewrite queries using `core.async`. Please also read
 the "Pitfalls" section if you plan to use `cljsql` in production.
 
@@ -72,7 +71,7 @@ where
     interpolate into the statement,
   - `<options>` allow one to customise the output of the
     query. Currently supported options are:
-	- `:output`: what to return from the query. Possible values are
+    - `:output`: what to return from the query. Possible values are
       `:rows`, `:rows-affected`, `:insert-id`, `:none`, `:first` and
       `:full`. Defaults to `:rows`.
     - `:xform`: a transducer to transform the rows received before
@@ -141,10 +140,9 @@ Here is an example of how one might do a data migration using
   [db]
   (tx :type :change-version
       :from "1.0"
-	  :to "2.0"
+      :to "2.0"
 
-	  (<ignore
-	    "ALTER TABLE customers ADD COLUMN SSID TEXT")))
+      (<ignore "ALTER TABLE customers ADD COLUMN SSID TEXT")))
 ```
 
 Here, I fetch a bunch of integer values, and map the
@@ -156,14 +154,13 @@ over them:
   "Returns a channel containing the entries in `column` of `table`
   mapped through the Collatz function, or an error."
   [table column]
-  ;  I'm just reading from the table, so
-	    there's no need for a write lock:
+  ;  I'm just reading from the table, so there's no need for a write lock:
   (tx :type :read-only
     (<q (str "SELECT " column " FROM " table)
-	    :keywordize-keys false
-	    :xform (comp
-		         (map #(% column))
-		         (map #(if (even? x) (/ x 2) (inx (* x 3))))))))
+        :keywordize-keys false
+        :xform (comp
+	        (map #(% column))
+		(map #(if (even? x) (/ x 2) (inx (* x 3))))))))
 ```
 
 Finally, here's a slightly more complicated transaction. Suppose I
@@ -183,11 +180,11 @@ returns a channel containing the id of the newly created post.
   [post comments]
   (tx
     (let [post-id (<insert-id "INSERT INTO posts VALUES (?)" [post])
-	      comment-insertion
-		    (str "INSERT INTO comments VALUES (?, " post-id ")")]
-	  (doseq [comment comments]
-	    (<ignore comment-insertion [comment])))
-	post-id))
+          comment-insertion
+            (str "INSERT INTO comments VALUES (?, " post-id ")")]
+      (doseq [comment comments]
+        (<ignore comment-insertion [comment])))
+    post-id))
 ```
 
 ## Pitfalls and footguns

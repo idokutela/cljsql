@@ -134,6 +134,9 @@ continue in the same transaction.
 Here is an example of how one might do a data migration using
 `tx`.
 
+**WARNING**: `db.changeVersion` does not work on many platform
+implementations of `websql`, and correspondingly for `cljsql.
+
 ```cljs
 (defn migrate-to-v2
   "Adds an SSID field to the customers database."

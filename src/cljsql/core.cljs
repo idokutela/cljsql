@@ -150,14 +150,14 @@
   "Gets the insertId from query results if present. Otherwise null."
   [results]
   (try (.-insertId results)
-       (catch js/Error e nil)))
+       (catch :default e nil)))
 
 
 (defn- -get-rowsAffected
   "Gets the rows affected by a query."
   [results]
   (try (.-rowsAffected results)
-       (catch js/Error e nil)))
+       (catch :default e nil)))
 
 
 (defn- -process-results
@@ -181,8 +181,8 @@
     (reset! *tx* tx)
     (try
       (cb nil (-process-results res opts))
-      (catch Object o
-        (cb o)))
+      (catch :default e
+        (cb e)))
     nil))
 
 
